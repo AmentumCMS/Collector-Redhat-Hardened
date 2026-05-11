@@ -8,7 +8,7 @@ echo -e "Listing releases\n"
 gh release list -R $REPO
 echo -e "\nDownloading Latest to $DEST\n"
 gh release download -p "*" -D $DEST -R $REPO
-ls -Alht $DEST 
+ls -1sh $DEST 
 if [ $? ];then
   echo -e "\nDownload Complete!"
 else
