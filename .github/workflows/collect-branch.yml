@@ -37,9 +37,9 @@ jobs:
 
       - name: ${{ vars.REGISTRY }} Login
         run: |
-          echo '${{ secrets.REGISTRY_JSON }}' \
-          | skopeo login  -u _json_key --password-stdin \
-            ${{ vars.REGISTRY }}
+          skopeo login '${{ vars.REGISTRY }}' \
+            -u '${{ secrets.REDHAT_USER }}' \
+            -p '${{ secrets.REDHAT_PASS }}'
 
       - name: Run Skopeo Sync
         run: |
@@ -74,76 +74,76 @@ jobs:
           path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz*
           if-no-files-found: error
 
-  Helm:
-    needs: [Date]
-    runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ github.token }}
-    steps:
-      - name: Pull FOSS helm charts
-        run: |
-          HELM_URL="https://charts.Redhat Hardened Container.com/Redhat Hardened Container/"
-          echo -e "\nInstall helm images plugin"
-          helm plugin install https://github.com/nikhilsbhat/helm-images > /dev/null 2>&1
-          mkdir -p ${{ vars.COLLECTOR }}/helmchart
-          cd ${{ vars.COLLECTOR }}/helmchart
+  # Helm:
+  #   needs: [Date]
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     GH_TOKEN: ${{ github.token }}
+  #   steps:
+  #     - name: Pull FOSS helm charts
+  #       run: |
+  #         HELM_URL="https://charts.bitnami.com/bitnami/"
+  #         echo -e "\nInstall helm images plugin"
+  #         helm plugin install https://github.com/nikhilsbhat/helm-images > /dev/null 2>&1
+  #         mkdir -p ${{ vars.COLLECTOR }}/helmchart
+  #         cd ${{ vars.COLLECTOR }}/helmchart
 
-          echo -e "\nSet repo and pull chart"
-          for REPO in kafka postgresql sonarqube; do
-            helm repo add $REPO $HELM_URL
-            helm pull $REPO/$REPO
-          done
+  #         echo -e "\nSet repo and pull chart"
+  #         for REPO in kafka postgresql sonarqube; do
+  #           helm repo add $REPO $HELM_URL
+  #           helm pull $REPO/$REPO
+  #         done
 
-          echo -ne "\nImages listed in charts:"
-          for chart in *.tgz; do
-            echo -e "\nChart: $chart"
-            helm images get $chart
-          done
+  #         echo -ne "\nImages listed in charts:"
+  #         for chart in *.tgz; do
+  #           echo -e "\nChart: $chart"
+  #           helm images get $chart
+  #         done
 
-          echo -e "\nHelmchart Hash "
-          sha256sum -b * \
-          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.helm.sha
-          echo -e "\n\nList files:\n$(pwd;ls -1SSh)"
+  #         echo -e "\nHelmchart Hash "
+  #         sha256sum -b * \
+  #         | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.helm.sha
+  #         echo -e "\n\nList files:\n$(pwd;ls -1SSh)"
 
-      - name: Upload Helmchart
-        uses: actions/upload-artifact@v7
-        with:
-          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-foss.helm
-          path: ${{ vars.COLLECTOR }}/helmchart
-          if-no-files-found: error
+  #     - name: Upload Helmchart
+  #       uses: actions/upload-artifact@v7
+  #       with:
+  #         name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-foss.helm
+  #         path: ${{ vars.COLLECTOR }}/helmchart
+  #         if-no-files-found: error
           
-      - name: Pull COTS helm charts
-        run: |
-          HELM_URL="https://${{ vars.REGISTRY }}"
-          HELM_REPO="kafka"
-          HELM_NAME="kafka"
-          rm -vf ${{ vars.COLLECTOR }}/helmchart/*
-          cd ${{ vars.COLLECTOR }}/helmchart
-          echo '${{ secrets.REGISTRY_JSON }}' \
-          | helm registry login -u _json_key --password-stdin ${{ vars.REGISTRY }}
+  #     - name: Pull COTS helm charts
+  #       run: |
+  #         HELM_URL="https://${{ vars.REGISTRY }}"
+  #         HELM_REPO="kafka"
+  #         HELM_NAME="kafka"
+  #         rm -vf ${{ vars.COLLECTOR }}/helmchart/*
+  #         cd ${{ vars.COLLECTOR }}/helmchart
+  #         echo '${{ secrets.REGISTRY_JSON }}' \
+  #         | helm registry login -u _json_key --password-stdin ${{ vars.REGISTRY }}
 
-          echo -e "\nPull charts"
-          for REPO in kafka postgresql sonarqube argo-cd keycloak; do
-            helm pull oci://us-east4-docker.pkg.dev/vmw-app-catalog/hosted-registry-df1b26d7a2f/charts/redhatubi-9/$REPO
-          done
+  #         echo -e "\nPull charts"
+  #         for REPO in kafka postgresql sonarqube argo-cd keycloak; do
+  #           helm pull oci://us-east4-docker.pkg.dev/vmw-app-catalog/hosted-registry-df1b26d7a2f/charts/redhatubi-9/$REPO
+  #         done
 
-          echo -e "\nImages listed in chart"
-          for chart in *.tgz; do
-            echo -e "\nChart: $chart"
-            helm images get $chart
-          done
+  #         echo -e "\nImages listed in chart"
+  #         for chart in *.tgz; do
+  #           echo -e "\nChart: $chart"
+  #           helm images get $chart
+  #         done
 
-          echo -e "\n\nHelmchart Hash "
-          sha256sum -b * \
-          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.helm.sha
-          echo -e "\n\nList files:\n$(pwd;ls -1SSh)"
+  #         echo -e "\n\nHelmchart Hash "
+  #         sha256sum -b * \
+  #         | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.helm.sha
+  #         echo -e "\n\nList files:\n$(pwd;ls -1SSh)"
 
-      - name: Upload Helmchart
-        uses: actions/upload-artifact@v7
-        with:
-          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-cots.helm
-          path: ${{ vars.COLLECTOR }}/helmchart
-          if-no-files-found: error
+  #     - name: Upload Helmchart
+  #       uses: actions/upload-artifact@v7
+  #       with:
+  #         name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-cots.helm
+  #         path: ${{ vars.COLLECTOR }}/helmchart
+  #         if-no-files-found: error
 
   Code:
     needs: [Date]
@@ -215,7 +215,7 @@ jobs:
 
   MakeISO:
     runs-on: ubuntu-latest
-    needs: [Date, Code, Skopeo, Helm]
+    needs: [Date, Code, Skopeo]
     env:
       GH_TOKEN: ${{ github.token }}
     permissions:
