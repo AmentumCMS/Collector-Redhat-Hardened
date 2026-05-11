@@ -30,7 +30,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v6
 
-      - name: Update & Install Skopeo
+      - name: Install Skopeo
         run: |
           sudo apt-get update -y &&\
           sudo apt-get install -y skopeo pigz
@@ -50,7 +50,7 @@ jobs:
 
       - name: Directory Contents
         run: |
-          echo -e "Directory Contents\n$(ls -1hs *)\n"
+          echo -e "\nDirectory Contents\n$(ls -1hs *)"
           echo -e "\nDirectory Size\n$(du -hd1)"
 
       - name: TARchive Skopeo Output
@@ -61,8 +61,8 @@ jobs:
 
       - name: Generate Hash
         run: |
-          sha256sum -b ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz | tee \
-            ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz.sha
+          sha256sum -b ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz 
+          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz.sha
 
       - name: List files 
         run: ls -1sh ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz*
