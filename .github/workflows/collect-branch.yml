@@ -50,8 +50,8 @@ jobs:
 
       - name: Directory Contents
         run: |
-          echo -e "Directory Contents\n$(ls -lAhS *)"
-          echo -e "\n\nDirectory Size\n$(du -hd1)"
+          echo -e "Directory Contents\n$(ls -1hs *)\n"
+          echo -e "\nDirectory Size\n$(du -hd1)"
 
       - name: TARchive Skopeo Output
         run: |
@@ -175,7 +175,7 @@ jobs:
             git push
           fi
 
-      - name: Bundle Repo1 code base for ${{ vars.COLLECTOR }}
+      - name: Bundle code base for ${{ vars.COLLECTOR }}
         run: |
           git bundle create --progress ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-code.bundle --all
           echo -e "\nDirectory Listing\n$(ls -1sht *)"
