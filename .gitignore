@@ -1,0 +1,8 @@
+# Ignore .vagrant
+.vagrant*
+Bitnami/*
+
+# Ignore Files
+*.tgz
+*.zip
+*.bundle
