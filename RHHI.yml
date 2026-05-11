@@ -2,7 +2,7 @@ registry.access.redhat.com:
     images-by-tag-regex:
         hi/core-runtime: ^2.42-openssl-fips$|^2.42-fips-builder$
         hi/nginx: ^1.30-fips$|^1.30-builder$
-        hi/openjdk: ^25.0-fips$|^25.0-fips-builder$|^21.0-fips$|^21.0-fips-builder$
+        hi/openjdk: ^25.0-fips$|^25.0-runtime-fips$|^25.0-fips-builder$|^25.0-runtime-fips-builder$|^21.0-fips$|^21.0-fips-builder$|^21.0-runtime-fips$|^21.0-runtime-fips-builder$
         hi/nodejs: ^24.15-fips$|^24.15-fips-builder$|^26.1-fips$|^26.1-fips-builder$
         hi/python: ^3.14-fips$|^3.14-fips-builder$
         hi/postgresql: ^18.3$|^18.3-builder$
