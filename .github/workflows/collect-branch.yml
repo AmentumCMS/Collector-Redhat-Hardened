@@ -33,7 +33,7 @@ jobs:
       - name: Install Skopeo
         run: |
           sudo apt-get update -y &&\
-          sudo apt-get install -y skopeo pigz
+          sudo apt-get install -y skopeo zstd
 
       - name: ${{ vars.REGISTRY }} Login
         run: |
@@ -55,9 +55,9 @@ jobs:
 
       - name: TARchive Skopeo Output
         run: |
-          tar -cv -Ipigz --remove-files \
-            -f ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz ${{ vars.COLLECTOR }} \
-          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz.txt
+          tar -cv --use-compress-program="zstd -T0 -19 --long=27" --remove-files \
+            -f ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst ${{ vars.COLLECTOR }} \
+          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst.txt
 
       - name: Generate Hash
         run: |
