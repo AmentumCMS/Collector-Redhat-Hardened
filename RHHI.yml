@@ -9,11 +9,11 @@ registry.access.redhat.com:
         hi/curl: ^8-fips$|^8-fips-builder$
         hi/rabbitmq: ^4.3$|^4.3-builder$
         hi/kubectl: ^1$|^1-builder$
-        hi/syft: latest
-        hi/grype: latest
-        hi/openscap: latest
-        hi/cosign: latest
+        hi/syft: ^latest$|^latest-builder$
+        hi/grype: ^latest$|^latest-builder$
+        hi/openscap: ^latest$|^latest-builder$
+        hi/cosign: ^latest$|^latest-builder$
         hi/go: latest-fips|latest-fips-builder$
-        hi/rust: latest|latest-builder$
-        hi/dotnet-runtime: latest|latest-builder$
-        hi/dotnet-sdk: latest|latest-builder$
+        hi/rust: ^latest$|^latest-builder$
+        hi/dotnet-runtime: ^latest$|^latest-builder$
+        hi/dotnet-sdk: ^latest$|^latest-builder$
