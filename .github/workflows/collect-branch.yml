@@ -61,17 +61,17 @@ jobs:
 
       - name: Generate Hash
         run: |
-          sha256sum -b ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz \
-          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz.sha
+          sha256sum -b ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst \
+          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst.sha
 
       - name: List files 
-        run: ls -1sh ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz*
+        run: ls -1sh ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst*
 
       - name: Upload TARchive, ToC, and hash
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz
-          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz*
+          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst
+          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst*
           if-no-files-found: error
 
   # Helm:
@@ -223,7 +223,7 @@ jobs:
       - name: Download skopeo artifact
         uses: actions/download-artifact@v8
         with:
-          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz
+          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst
           path: scan-input
 
       - name: Show downloaded files
