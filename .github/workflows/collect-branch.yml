@@ -33,7 +33,7 @@ jobs:
       - name: Install Skopeo
         run: |
           sudo apt-get update -y &&\
-          sudo apt-get install -y skopeo zstd
+          sudo apt-get install -y skopeo pigz
 
       - name: ${{ vars.REGISTRY }} Login
         run: |
@@ -55,23 +55,23 @@ jobs:
 
       - name: TARchive Skopeo Output
         run: |
-          tar -cv --use-compress-program="zstd -T0 -19 --long=27" --remove-files \
-            -f ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst ${{ vars.COLLECTOR }} \
-          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst.txt
+          tar -cv -Ipigz --remove-files \
+            -f ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz ${{ vars.COLLECTOR }} \
+          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz.txt
 
       - name: Generate Hash
         run: |
-          sha256sum -b ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst \
-          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst.sha
+          sha256sum -b ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz \
+          | tee ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz.sha
 
       - name: List files 
-        run: ls -1sh ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst*
+        run: ls -1sh ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz*
 
       - name: Upload TARchive, ToC, and hash
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst
-          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst*
+          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz
+          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz*
           if-no-files-found: error
 
   # Helm:
@@ -223,7 +223,7 @@ jobs:
       - name: Download skopeo artifact
         uses: actions/download-artifact@v8
         with:
-          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tar.zst
+          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}-skopeo.tgz
           path: scan-input
 
       - name: Show downloaded files
@@ -272,7 +272,7 @@ jobs:
 
           mkdir -p extracted
 
-          tgz="$(find scan-input -type f -name '*.tar.zst' | head -n 1)"
+          tgz="$(find scan-input -type f -name '*.tgz' | head -n 1)"
           [ -n "$tgz" ] || {
             echo "ERROR: no skopeo tgz artifact found"
             exit 1
