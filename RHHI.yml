@@ -13,7 +13,3 @@ registry.access.redhat.com:
         hi/grype: ^latest$|^latest-builder$
         hi/openscap: ^latest$|^latest-builder$
         hi/cosign: ^latest$|^latest-builder$
-        hi/go: latest-fips|latest-fips-builder$
-        hi/rust: ^latest$|^latest-builder$
-        hi/dotnet-runtime: ^latest$|^latest-builder$
-        hi/dotnet-sdk: ^latest$|^latest-builder$
