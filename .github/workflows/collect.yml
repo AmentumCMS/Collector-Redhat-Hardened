@@ -226,7 +226,7 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update -y
-          sudo apt-get install -y curl tar jq
+          sudo apt-get install -y curl tar jq zstd
 
       - name: Install Trivy + Grype + skopeo
         run: |
@@ -544,7 +544,7 @@ jobs:
 
       - name: Make ISO
         run: |
-          mkisofs -J -R -v -T -l \
+          mkisofs -J -R -v -T -l -allow-limited-size\
             -V '${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}' \
             -A '${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}' \
             -o ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso \
