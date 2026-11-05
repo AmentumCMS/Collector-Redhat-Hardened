@@ -1,6 +1,6 @@
 # Ignore .vagrant
 .vagrant*
-Bitnami/*
+**/*RHHI*/
 
 # Ignore Files
 *.tgz
